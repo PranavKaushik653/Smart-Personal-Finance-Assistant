@@ -44,6 +44,11 @@ public class Account {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     // Many accounts belong to one user
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -67,6 +72,16 @@ public class Account {
         public String getDisplayName() {
             return displayName;
         }
+    }
+
+    public Account(String accountName, AccountType accountType, BigDecimal initialBalance, User user) {
+        this();
+        this.accountName = accountName;
+        this.accountType = accountType;
+        this.initialBalance = initialBalance;
+        this.currentBalance = initialBalance;
+        this.user = user;
+
     }
 
     /**

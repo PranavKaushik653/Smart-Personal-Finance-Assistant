@@ -12,10 +12,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+//@Builder
 public class Transaction {
 
     @Id
@@ -61,6 +62,7 @@ public class Transaction {
         public String getDisplayName() { return displayName; }
     }
 
+    @Getter
     public enum Category {
         // Income categories
         SALARY("Salary"),
@@ -83,7 +85,6 @@ public class Transaction {
 
         private final String displayName;
         Category(String displayName) { this.displayName = displayName; }
-        public String getDisplayName() { return displayName; }
 
         public static Category[] getIncomeCategories() {
             return new Category[]{SALARY, FREELANCE, INVESTMENT, OTHER_INCOME};
@@ -96,6 +97,19 @@ public class Transaction {
         }
     }
 
+
+
+    public Transaction(String description, BigDecimal amount, TransactionType transactionType,
+                       Category category, LocalDate transactionDate, Account account) {
+        this();
+        this.description = description;
+        this.amount = amount;
+        this.transactionType = transactionType;
+        this.category = category;
+        this.transactionDate = transactionDate;
+        this.account = account;
+    }
+
     public String getFormattedAmount() {
         return String.format("$%.2f", amount);
     }
@@ -103,5 +117,11 @@ public class Transaction {
     public String getSignedFormattedAmount() {
         String prefix = transactionType == TransactionType.INCOME ? "+" : "-";
         return prefix + getFormattedAmount();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Transaction{id=%d, desc='%s', amount=%s, type=%s, category=%s}",
+                id, description, getFormattedAmount(), transactionType, category);
     }
 }

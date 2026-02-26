@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 
 @Entity
-@Table(name = "budgets", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "category", "budget_month"})
-})
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Table(name = "budgets", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "category", "budget_month"})
+})
+//@Builder
 public class Budget {
 
     @Id
@@ -45,6 +45,21 @@ public class Budget {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+//    public Budget() {
+//        this.createdAt = LocalDateTime.now();
+//    }
+
+    /**
+     * Constructor for creating budgets
+     */
+    public Budget(Transaction.Category category, BigDecimal budgetAmount, YearMonth budgetMonth, User user) {
+        this();
+        this.category = category;
+        this.budgetAmount = budgetAmount;
+        this.budgetMonth = budgetMonth;
+        this.user = user;
+    }
+
     public String getFormattedBudgetAmount() {
         return String.format("$%.2f", budgetAmount);
     }
@@ -65,4 +80,11 @@ public class Budget {
     public BigDecimal getRemainingAmount(BigDecimal spentAmount) {
         return budgetAmount.subtract(spentAmount);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Budget{id=%d, category=%s, amount=%s, month=%s}",
+                id, category, getFormattedBudgetAmount(), budgetMonth);
+    }
 }
+
